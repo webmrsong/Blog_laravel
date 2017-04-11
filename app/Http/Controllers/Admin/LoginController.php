@@ -27,7 +27,7 @@ class LoginController extends CommonController
                 return back()->with('msg','用户名或者密码错误');
             }
             session(['user'=>$user]);
-            dd(session('user'));
+            return redirect('admin/index');
 
 
         }else{
