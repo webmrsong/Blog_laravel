@@ -12,7 +12,7 @@
 		<div class="form">
 			@if(session('msg'))
 				<p style="color:#ff1f1f">{{session('msg')}}</p>
-			@endif积极急急急
+			@endif
 			<form action=" " method="post">
 				{{csrf_field()}}
 				<ul>
