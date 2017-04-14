@@ -37,16 +37,16 @@ class LoginController extends CommonController
 
     }
     public function code()
-    {
-        $code = new Code;
+   {
+       $code = new Code;
         $code->make();
-    }
-
-     public function crypt()
+   }
+    //退出后台,清空sesion
+    public function quit()
     {
-        $str = '123456';
-
-        echo \Crypt::encrypt($str);
-
+        session(['user'=> null]);
+        //dd(session('user'));
+        return redirect('admin/login');
     }
+
 }
