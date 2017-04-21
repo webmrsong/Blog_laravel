@@ -3,6 +3,7 @@
     <script type="text/javascript" charset="utf-8" src="{{asset('libs/ueditor/ueditor.config.js')}}"></script>
     <script type="text/javascript" charset="utf-8" src="{{asset('libs/ueditor/ueditor.all.min.js')}}"> </script>
     <script type="text/javascript" charset="utf-8" src="{{asset('libs/ueditor/lang/zh-cn/zh-cn.js')}}"></script>
+
     <!--面包屑导航 开始-->
     <div class="crumb_warp">
         <!--<i class="fa fa-bell"></i> 欢迎使用登陆网站后台，建站的首选工具。-->
@@ -68,10 +69,41 @@
                 <tr>
                     <th>缩略图：</th>
                     <td>
-                        <textarea name="cate_thumb"></textarea>
+                        <input type="text" size="50" name="art_thumb">
+                        <input id="file_upload" name="file_upload" type="file" multiple="true">
+                        <script src="{{asset('libs/uploadify/jquery.uploadify.min.js')}}" type="text/javascript"></script>
+                        <link rel="stylesheet" type="text/css" href="{{asset('libs/uploadify/uploadify.css')}}">
+                        <script type="text/javascript">
+                            <?php $timestamp = time();?>
+                                $(function() {
+                                $('#file_upload').uploadify({
+                                    'buttonText':'图片上传',
+                                    'formData'     : {
+                                        'timestamp' : '<?php echo $timestamp;?>',
+                                        '_token'     : '{{csrf_token()}}'
+                                    },
+                                    'swf'      : "{{asset('libs/uploadify/uploadify.swf')}}",
+                                    'uploader' : "{{url('admin/upload')}}",
+                                    'onUploadSuccess' : function(file, data, response) {
+                                        $('input[name=art_thumb]').val(data);
+                                        $('#art_thumb_img').attr('src','/'+data);
+                                    }
+                                });
+                            });
+                        </script>
+                        <style>
+                            .uploadify{display:inline-block;}
+                            .uploadify-button{border:none; border-radius:5px; margin-top:8px;}
+                            table.add_tab tr td span.uploadify-button-text{color: #FFF; margin:0;}
+                        </style>
                     </td>
                 </tr>
-
+                <tr>
+                    <th></th>
+                    <td>
+                        <img src="" alt="" id="art_thumb_img" style="max-width: 350px; max-height:100px;>
+                    </td>
+                </tr>
                 <tr>
                     <th>关键词：</th>
                     <td>
