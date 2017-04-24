@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Model\Article;
 use App\Http\Model\Category;
 use Illuminate\Http\Request;
 
@@ -17,7 +18,9 @@ class ArticleController extends Controller
      */
     public function index()
     {
-        //
+        $data = Article::orderBy('art_id','desc')->paginate(3);
+        //dd($data->links());
+        return view('admin.article.index',compact('data'));
     }
 
     /**
@@ -39,7 +42,28 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $input = $request->except('_token');
+        $rules = [
+            'art_title' => 'required',
+            'art_content' => 'required',
+        ];
+        $message =[
+            'art_title.required' => '文章名称不能为空',
+            'art_content.required' => '文章内容不能为空',
+
+        ];
+        $validator = \Validator::make($input,$rules,$message);
+        if ($validator->passes())
+        {
+            $res = Article::create($input);
+            if($res){
+                return redirect('admin/article');
+            }else{
+                return back()->with('errors','文章添加失败!请稍后重试');
+            }
+        }else{
+            return back()->withErrors($validator);
+        }
     }
 
     /**
@@ -50,7 +74,7 @@ class ArticleController extends Controller
      */
     public function show($id)
     {
-        //
+
     }
 
     /**
@@ -59,9 +83,11 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($art_id)
     {
-        //
+        $field = Article::find($art_id);
+        $data = (new Category())->tree();
+        return view('admin.article.edit',compact('field','data'));
     }
 
     /**
@@ -71,9 +97,16 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $art_id)
     {
-        //
+        $input = $request->except('_token','_method');
+        //dd($input);
+        $re = Article::where('art_id',$art_id)->update($input);
+        if($re){
+            return redirect('admin/article');
+        }else{
+            return back()->with('errors','文章更新失败，请稍后重试！');
+        }
     }
 
     /**
@@ -82,8 +115,21 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($art_id)
     {
-        //
+        $res = Article::where('art_id',$art_id)->delete();
+
+        if($res){
+            $data = [
+                'status' => 0,
+                'msg' => '文章删除成功!!'
+            ];
+        }else{
+            $data = [
+                'status' => 1,
+                'msg' => '文章信息删除失败,请稍后重试!!'
+            ];
+        }
+        return $data;
     }
 }

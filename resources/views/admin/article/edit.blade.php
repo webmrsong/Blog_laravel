@@ -7,7 +7,7 @@
     <!--面包屑导航 开始-->
     <div class="crumb_warp">
         <!--<i class="fa fa-bell"></i> 欢迎使用登陆网站后台，建站的首选工具。-->
-        <i class="fa fa-home"></i> <a href="{{url('admin/info')}}">首页</a> &raquo;添加文章信息
+        <i class="fa fa-home"></i> <a href="{{url('admin/info')}}">首页</a> &raquo;修改文章信息
     </div>
     <!--面包屑导航 结束-->
 
@@ -38,7 +38,8 @@
     <!--结果集标题与导航组件 结束-->
 
     <div class="result_wrap">
-        <form action="{{url('admin/article')}}" method="post">
+        <form action="{{url('admin/article/'.$field->art_id)}}" method="post">
+            <input type="hidden" name="_method" value="put">
             {{csrf_field()}}
             <table class="add_tab">
                 <tbody>
@@ -48,7 +49,9 @@
                         <select name="cate_id">
                             {{--<option value="0">==顶级分类==</option>--}}
                             @foreach($data as $d)
-                                <option value="{{$d->cate_id}}">{{$d->_cate_name}}</option>
+                                <option value="{{$d->cate_id}}"
+                                @if($field->cate_id == $d->cate_id) selected @endif
+                                >{{$d->_cate_name}}</option>
                             @endforeach
                         </select>
                     </td>
@@ -56,21 +59,21 @@
                 <tr>
                     <th><i class="require">*</i>文章标题：</th>
                     <td>
-                        <input type="text" class="lg" name="art_title">
+                        <input type="text" class="lg" name="art_title" value="{{$field->art_title}}">
 
                     </td>
                 </tr>
                 <tr>
                     <th>作者：</th>
                     <td>
-                        <input type="text" size="30" name="art_editor">
+                        <input type="text" size="30" name="art_editor" value="{{$field->art_editor}}">
                     </td>
                 </tr>
                 <tr>
                     <th>缩略图：</th>
                     <td>
-                        <input type="text" size="50" name="art_thumb">
-                        <input id="file_upload" name="file_upload" type="file" multiple="true">
+                        <input type="text" size="50" name="art_thumb" value="{{$field->art_thumb}}">
+                        <input id="file_upload" name="file_upload" type="file" multiple="true" >
                         <script src="{{asset('libs/uploadify/jquery.uploadify.min.js')}}" type="text/javascript"></script>
                         <link rel="stylesheet" type="text/css" href="{{asset('libs/uploadify/uploadify.css')}}">
                         <script type="text/javascript">
@@ -99,23 +102,29 @@
                     </td>
                 </tr>
                 <tr>
-                    <th>关键词：</th>
+                    <th></th>
                     <td>
-                        <input type="text" class="lg" name="art_tag">
+                        <img src="/{{$field->art_thumb}}" alt="" id="art_thumb_img" style="max-width: 350px; max-height:100px;">
                     </td>
                 </tr>
 
                 <tr>
+                    <th>关键词：</th>
+                    <td>
+                        <input type="text" class="lg" name="art_tag" value="{{$field->art_tag}}">
+                    </td>
+                </tr>
+                <tr>
                     <th>描述：</th>
                     <td>
-                        <textarea name="art_description"></textarea>
+                        <textarea name="art_description">{{$field->art_description}}</textarea>
                     </td>
                 </tr>
                 <tr>
                     <th><i class="require">*</i>文章内容：</th>
                     <td>
 
-                        <textarea id="editor" name="art_content" type="text/plain" style="width:1024px;height:500px;"></textarea>
+                        <textarea id="editor" name="art_content" type="text/plain" style="width:1024px;height:500px;">{{$field->art_content}}</textarea>
                         <script type="text/javascript">
                         var ue = UE.getEditor('editor');
                         </script>

@@ -34,7 +34,7 @@
 					</li>
 				</ul>
 			</form>
-			<p><a href="#">返回首页</a> &copy; 2016 Powered by  <a href="http://www.mrsong.me" target="_blank">http://www.mrsong.me</a></p>
+			<p><a href="#">返回首页</a> &copy; 2017 Powered by  <a href="http://www.mrsong.me" target="_blank">http://www.mrsong.me</a></p>
 		</div>
 	</div>
 </body>
