@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Model\Article;
-use App\Http\Model\Category;
+use App\Http\Model\navs;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Symfony\Component\DomCrawler\Link;
 
-class ArticleController extends Controller
+class navsController extends CommonController
 {
     /**
      * Display a listing of the resource.
@@ -18,20 +18,37 @@ class ArticleController extends Controller
      */
     public function index()
     {
-        $data = Article::orderBy('art_id','desc')->paginate(10);
-        //dd($data->links());
-        return view('admin.article.index',compact('data'));
+        $data =Navs::orderBy('nav_order','asc')->get();
+        return view('admin.navs.index',compact('data'));
     }
-
+    public function changeOrder(Request $request)
+    {
+        $input = $request->all();
+        $link = Navs::find($input['nav_id']);
+        $link->nav_order = $input['nav_order'];
+        $res = $link->update();
+        if ($res){
+            $data =[
+                'ststus' => 0,
+                'msg' => '分类更新排序成功'
+            ];
+        }else{
+            $data =[
+                'ststus' => 1,
+                'msg' => '分类更新排序失败,请稍后重试'
+            ];
+        }
+        return $data;
+    }
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
+
     public function create()
     {
-        $data = (new Category())->tree();
-        return view('admin.article.add',compact('data'));
+        return view('admin.navs.add');
     }
 
     /**
@@ -44,22 +61,22 @@ class ArticleController extends Controller
     {
         $input = $request->except('_token');
         $rules = [
-            'art_title' => 'required',
-            'art_content' => 'required',
+            'nav_name' => 'required',
+            'nav_url' => 'required',
         ];
         $message =[
-            'art_title.required' => '文章名称不能为空',
-            'art_content.required' => '文章内容不能为空',
+            'nav_name.required' => '导航名称不能为空',
+            'nav_url.required' => '导航地址不能为空',
 
         ];
         $validator = \Validator::make($input,$rules,$message);
         if ($validator->passes())
         {
-            $res = Article::create($input);
+            $res = Navs::create($input);
             if($res){
-                return redirect('admin/article');
+                return redirect('admin/navs');
             }else{
-                return back()->with('errors','文章添加失败!请稍后重试');
+                return back()->with('errors','自定义导航填充失败!请稍后重试');
             }
         }else{
             return back()->withErrors($validator);
@@ -74,7 +91,7 @@ class ArticleController extends Controller
      */
     public function show($id)
     {
-
+        //
     }
 
     /**
@@ -83,11 +100,11 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($art_id)
+    public function edit($nav_id)
     {
-        $field = Article::find($art_id);
-        $data = (new Category())->tree();
-        return view('admin.article.edit',compact('field','data'));
+        $field = Navs::find($nav_id);
+
+        return view('admin/navs/edit',compact('field'));
     }
 
     /**
@@ -97,17 +114,16 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $art_id)
+    public function update(Request $request, $nav_id)
     {
         $input = $request->except('_token','_method');
-        //dd($input);
-        $re = Article::where('art_id',$art_id)->update($input);
-        if($re){
-            return redirect('admin/article');
+        $res = Navs::where('nav_id',$nav_id)->update($input);
+        if ($res)
+        {
+            return redirect('admin/navs');
         }else{
-            return back()->with('errors','文章更新失败，请稍后重试！');
-        }
-    }
+            return back()->with('errors','导航更新失败!请稍后重试');
+    }}
 
     /**
      * Remove the specified resource from storage.
@@ -115,19 +131,19 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($art_id)
+    public function destroy($nav_id)
     {
-        $res = Article::where('art_id',$art_id)->delete();
+        $res = Navs::where('nav_id',$nav_id)->delete();
 
         if($res){
             $data = [
                 'status' => 0,
-                'msg' => '文章删除成功!!'
+                'msg' => '导航信息删除成功!!'
             ];
         }else{
             $data = [
                 'status' => 1,
-                'msg' => '文章信息删除失败,请稍后重试!!'
+                'msg' => '导航信息删除失败,请稍后重试!!'
             ];
         }
         return $data;
