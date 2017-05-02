@@ -61,7 +61,7 @@
                 <tr>
                     <th>分类标题：</th>
                     <td>
-                        <input type="text" class="lg" name="cate_title" value="{{$field->cate_tile}}">
+                        <input type="text" class="lg" name="cate_title" value="{{$field->cate_title}}">
                     </td>
                 </tr>
                 <tr>

@@ -43,6 +43,7 @@ class ArticleController extends Controller
     public function store(Request $request)
     {
         $input = $request->except('_token');
+        $input['art_time'] = time();
         $rules = [
             'art_title' => 'required',
             'art_content' => 'required',

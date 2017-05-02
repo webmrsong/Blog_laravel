@@ -68,7 +68,7 @@
                         </td>
                         <td>{{$v->art_view}}</td>
                         <td>{{$v->art_editor}}</td>
-                        <td>{{$v->art_time}}</td>
+                        <td>{{date('Y-m-d h:i:s',$v->art_time)}}</td>
 
                         <td>
                             <a href="{{url('admin/article/'.$v->art_id.'/edit')}}">修改</a>
